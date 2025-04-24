@@ -5,8 +5,8 @@ import pytest
 # Add the project root to the system path for module resolution
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
-from src.derive.mnemonic_phrase import derive_wallet_info
-from src.derive.brain_wallet import (
+from src.hrnd.derive.mnemonic_phrase import derive_wallet_info
+from src.hrnd.derive.brain_wallet import (
     generate_private_key,
     generate_public_key,
     generate_bitcoin_address,

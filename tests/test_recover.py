@@ -1,7 +1,7 @@
 import pytest
-from src.recover import find_missing_words
+from hrnd.recover import find_missing_words
 from click.testing import CliRunner
-from src.recover import main
+from hrnd.recover import cli
 
 
 def test_find_missing_words():
@@ -18,12 +18,14 @@ def test_find_missing_words():
 def test_successful_correction():
     runner = CliRunner()
     result = runner.invoke(
-        main,
+        cli,
         [
+            "recover",
             "--mnemonic",
             "volume prison sunset envelope office pool garlic want diet humble supr bean",
         ],
     )
+    print(result.output)
     assert result.exit_code == 0
     assert "✅ Corrected 'supr' to 'super'" in result.output
     assert "✅ Mnemonic is complete and valid." in result.output
@@ -32,12 +34,14 @@ def test_successful_correction():
 def test_main_command():
     runner = CliRunner()
     result = runner.invoke(
-        main,
+        cli,
         [
+            "recover",
             "--mnemonic",
             "abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon ____",
         ],
     )
+    print(result.output)
     assert result.exit_code == 0
     assert (
         "❌ No missing words detected. Use '____' for missing ones."

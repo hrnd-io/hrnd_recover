@@ -3,6 +3,7 @@ from mnemonic import Mnemonic
 from itertools import product
 from tqdm import tqdm
 from rapidfuzz import fuzz, process
+from hrnd.derive import cli as derive_cli
 
 
 mnemo = Mnemonic("english")
@@ -64,19 +65,30 @@ def correct_typos(mnemonic: str, wordlist: list[str]) -> str:
     return " ".join(corrected_words)
 
 
-@click.command()
+@click.group()
+def cli():
+    """A CLI tool for recovering valid mnemonics from partial phrases."""
+    pass
+
+
+@cli.command()
 @click.option(
     "--mnemonic", "-m", required=True, help="Mnemonic with missing words as '____'"
 )
+@click.option("--quiet", is_flag=True, help="Suppress result printing.")
 @click.option(
-    "--quiet", is_flag=True, help="Suppress result printing (but keep progress bar)."
+    "--output", "-o", type=click.Path(), help="Save recovered mnemonics to a file."
 )
-@click.option(
-    "--output",
-    "-o",
-    type=click.Path(),
-    help="Optional file to save recovered mnemonics.",
-)
+def recover(mnemonic, quiet, output):
+    """Recover valid mnemonics from partial phrases."""
+    main(mnemonic, quiet, output)
+
+
+# Directly register all subcommands
+for command in derive_cli.commands.values():
+    cli.add_command(command)
+
+
 def main(mnemonic, quiet, output):
     """
     Recover valid mnemonics by auto-detecting and brute-forcing missing words.
@@ -130,4 +142,4 @@ def main(mnemonic, quiet, output):
 
 
 if __name__ == "__main__":
-    main()
+    cli()
